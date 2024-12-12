@@ -950,12 +950,10 @@ function Material.Load(Config)
 		BannerOverlay.ZIndex = 75
 		BannerOverlay.Parent = MainFrame
 
-		local TextSize = TextService:GetTextSize(BannerText, 12, Enum.Font.Gotham, Vector2.new(0,0)).X
-
-		local Lines = math.ceil((TextSize) / (MainFrame.AbsoluteSize.X - 10))
-
-		local BannerSize = UDim2.fromScale(1,0) + UDim2.fromOffset(-10,(Lines*20)+40)
-		local BannerPosition = UDim2.fromScale(0,1) + UDim2.fromOffset(5,(-Lines*20)-45)
+		local TextSize = TextService:GetTextSize(BannerText, 12, Enum.Font.Gotham, Vector2.new(MainFrame.AbsoluteSize.X - 10, math.huge))
+    	local Lines = math.ceil(TextSize.Y / 20)
+		local BannerSize = UDim2.new(1, -10, 0, (Lines * 20) + 40)
+		local BannerPosition = UDim2.new(0, 5, 1, (-Lines * 20) - 45)
 
 		local Banner = Objects.new("Round")
 		Banner.Name = "Banner"
