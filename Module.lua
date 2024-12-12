@@ -168,6 +168,38 @@ local Themes = {
 		ColorPickerAccent = Color3.fromRGB(219, 68, 103),
 		TextField = Color3.fromRGB(175,175,175),
 		TextFieldAccent = Color3.fromRGB(255,255,255),
+	},
+	Red = {
+		MainFrame = Color3.fromRGB(0, 0, 0),
+		Minimise = Color3.fromRGB(0, 0, 0),
+		MinimiseAccent = Color3.fromRGB(255, 0, 0),
+		Maximise = Color3.fromRGB(255, 0, 0),
+		MaximiseAccent = Color3.fromRGB(0, 0, 0),
+		NavBar = Color3.fromRGB(255, 0, 0),
+		NavBarAccent = Color3.fromRGB(0, 0, 0),
+		NavBarInvert = Color3.fromRGB(0, 0, 0),
+		TitleBar = Color3.fromRGB(255, 0, 0),
+		TitleBarAccent = Color3.fromRGB(0, 0, 0),
+		Overlay = Color3.fromRGB(255, 0, 0),
+		Banner = Color3.fromRGB(255, 0, 0),
+		BannerAccent = Color3.fromRGB(0, 0, 0),
+		Content = Color3.fromRGB(255, 0, 0),
+		Button = Color3.fromRGB(255, 0, 0),
+		ButtonAccent = Color3.fromRGB(0, 0, 0),
+		ChipSet = Color3.fromRGB(255, 0, 0),
+		ChipSetAccent = Color3.fromRGB(0, 0, 0),
+		DataTable = Color3.fromRGB(255, 0, 0),
+		DataTableAccent = Color3.fromRGB(0, 0, 0),
+		Slider = Color3.fromRGB(0, 0, 0),
+		SliderAccent = Color3.fromRGB(255, 0, 0),
+		Toggle = Color3.fromRGB(255, 0, 0),
+		ToggleAccent = Color3.fromRGB(0, 0, 0),
+		Dropdown = Color3.fromRGB(255, 0, 0),
+		DropdownAccent = Color3.fromRGB(0, 0, 0),
+		ColorPicker = Color3.fromRGB(255, 0, 0),
+		ColorPickerAccent = Color3.fromRGB(0, 0, 0),
+		TextField = Color3.fromRGB(255, 0, 0),
+		TextFieldAccent = Color3.fromRGB(0, 0, 0)
 	}
 }
 
@@ -941,6 +973,7 @@ function Material.Load(Config)
 		BannerLabel.TextSize = 12
 		BannerLabel.Font = Enum.Font.Gotham
 		BannerLabel.Size = UDim2.fromScale(1,0) + UDim2.fromOffset(-5,(Lines*20)+5)
+		BannerLabel.RichText = true
 		BannerLabel.TextWrapped = true
 		BannerLabel.Position = UDim2.fromOffset(5,0)
 		BannerLabel.TextTransparency = 1
