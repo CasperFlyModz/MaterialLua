@@ -951,7 +951,7 @@ function Material.Load(Config)
 		BannerOverlay.Parent = MainFrame
 
 		local TextSize = TextService:GetTextSize(BannerText, 12, Enum.Font.Gotham, Vector2.new(MainFrame.AbsoluteSize.X - 10, math.huge))
-    	local Lines = math.ceil(TextSize.Y / 20)
+    		local Lines = math.ceil(TextSize.Y / 20)
 		local BannerSize = UDim2.new(1, -10, 0, (Lines * 20) + 40)
 		local BannerPosition = UDim2.new(0, 5, 1, (-Lines * 20) - 45)
 
@@ -969,7 +969,7 @@ function Material.Load(Config)
 		BannerLabel.Text = BannerText
 		BannerLabel.TextColor3 = Theme.BannerAccent
 		BannerLabel.TextSize = 12
-		BannerLabel.Font = Enum.Font.Gotham
+		BannerLabel.Font = Enum.Font.Code -- Gotham
 		BannerLabel.Size = UDim2.fromScale(1,0) + UDim2.fromOffset(-5,(Lines*20)+5)
 		BannerLabel.RichText = true
 		BannerLabel.TextWrapped = true
