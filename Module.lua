@@ -175,30 +175,30 @@ local Themes = {
 		MinimiseAccent = Color3.fromRGB(255, 0, 0),
 		Maximise = Color3.fromRGB(255, 0, 0),
 		MaximiseAccent = Color3.fromRGB(0, 0, 0),
-		NavBar = Color3.fromRGB(255, 0, 0),
+		NavBar = Color3.fromRGB(160, 0, 0),
 		NavBarAccent = Color3.fromRGB(0, 0, 0),
 		NavBarInvert = Color3.fromRGB(0, 0, 0),
-		TitleBar = Color3.fromRGB(255, 0, 0),
+		TitleBar = Color3.fromRGB(160, 0, 0),
 		TitleBarAccent = Color3.fromRGB(0, 0, 0),
-		Overlay = Color3.fromRGB(255, 0, 0),
-		Banner = Color3.fromRGB(255, 0, 0),
+		Overlay = Color3.fromRGB(160, 0, 0),
+		Banner = Color3.fromRGB(160, 0, 0),
 		BannerAccent = Color3.fromRGB(0, 0, 0),
-		Content = Color3.fromRGB(255, 0, 0),
-		Button = Color3.fromRGB(255, 0, 0),
+		Content = Color3.fromRGB(160, 0, 0),
+		Button = Color3.fromRGB(160, 0, 0),
 		ButtonAccent = Color3.fromRGB(0, 0, 0),
-		ChipSet = Color3.fromRGB(255, 0, 0),
+		ChipSet = Color3.fromRGB(160, 0, 0),
 		ChipSetAccent = Color3.fromRGB(0, 0, 0),
-		DataTable = Color3.fromRGB(255, 0, 0),
+		DataTable = Color3.fromRGB(160, 0, 0),
 		DataTableAccent = Color3.fromRGB(0, 0, 0),
 		Slider = Color3.fromRGB(0, 0, 0),
 		SliderAccent = Color3.fromRGB(255, 0, 0),
-		Toggle = Color3.fromRGB(255, 0, 0),
+		Toggle = Color3.fromRGB(160, 0, 0),
 		ToggleAccent = Color3.fromRGB(0, 0, 0),
-		Dropdown = Color3.fromRGB(255, 0, 0),
+		Dropdown = Color3.fromRGB(160, 0, 0),
 		DropdownAccent = Color3.fromRGB(0, 0, 0),
-		ColorPicker = Color3.fromRGB(255, 0, 0),
+		ColorPicker = Color3.fromRGB(160, 0, 0),
 		ColorPickerAccent = Color3.fromRGB(0, 0, 0),
-		TextField = Color3.fromRGB(255, 0, 0),
+		TextField = Color3.fromRGB(160, 0, 0),
 		TextFieldAccent = Color3.fromRGB(0, 0, 0)
 	}
 }
@@ -951,7 +951,7 @@ function Material.Load(Config)
 		BannerOverlay.Parent = MainFrame
 
 		local TextSize = TextService:GetTextSize(BannerText, 12, Enum.Font.Gotham, Vector2.new(MainFrame.AbsoluteSize.X - 10, math.huge))
-    	local Lines = math.ceil(TextSize.Y / 20)
+    		local Lines = math.ceil(TextSize.Y / 20)
 		local BannerSize = UDim2.new(1, -10, 0, (Lines * 20) + 40)
 		local BannerPosition = UDim2.new(0, 5, 1, (-Lines * 20) - 45)
 
