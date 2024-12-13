@@ -387,9 +387,13 @@ local NavBar = {
 		NavBarShadow.Parent = NewNavBar
 		NavBarShadow.ZIndex = 100
 
-		local NavBarContent = Objects.new("Frame")
+		local NavBarContent = Objects.new("ScrollingFrame")
 		NavBarContent.Name = "Content"
 		NavBarContent.Parent = NewNavBar
+		NavBarContent.AutomaticCanvasSize = Enum.AutomaticSize.X
+		NavBarContent.ScrollingDirection = Enum.ScrollingDirection.X
+		NavBarContent.Size = NavBarContent.Size - UDim2.fromOffset(10, 0)
+		NavBarContent.Position = NavBarContent.Position + UDim2.fromOffset(5, 0)
 
 		NavBarContent.ChildAdded:Connect(function(Child)
 			pcall(function()
@@ -422,9 +426,9 @@ local NavBar = {
 		NavBarList.SortOrder = Enum.SortOrder.LayoutOrder
 		NavBarList.Parent = NavBarContent
 
-		local NavBarPadding = Objects.new("UIPadding")
-		NavBarPadding.PaddingLeft = UDim.new(0,5)
-		NavBarPadding.Parent = NavBarContent
+		--local NavBarPadding = Objects.new("UIPadding")
+		--NavBarPadding.PaddingLeft = UDim.new(0,5)
+		--NavBarPadding.Parent = NavBarContent
 
 		return NewNavBar, NavBarContent
 	end,
@@ -751,34 +755,34 @@ function Material.Load(Config)
 
 	pcall(function() OldInstance:Destroy() end);
 
-    local function GetExploit()
-        local Table = {};
-        Table.Synapse = syn;
-        Table.ProtoSmasher = pebc_create;
-        Table.Sentinel = issentinelclosure;
-        Table.ScriptWare = getexecutorname;
+	local function GetExploit()
+		local Table = {};
+		Table.Synapse = syn;
+		Table.ProtoSmasher = pebc_create;
+		Table.Sentinel = issentinelclosure;
+		Table.ScriptWare = getexecutorname;
 
-        for ExploitName, ExploitFunction in next, Table do
-            if (ExploitFunction) then
-                return ExploitName;
-            end;
-        end;
+		for ExploitName, ExploitFunction in next, Table do
+			if (ExploitFunction) then
+				return ExploitName;
+			end;
+		end;
 
-        return "Undefined";
-    end;
+		return "Undefined";
+	end;
 
-    local ProtectFunctions = {};
-    ProtectFunctions.Synapse = function(GuiObject) syn.protect_gui(GuiObject); GuiObject.Parent = CoreGuiService; end;
-    ProtectFunctions.ProtoSmasher = function(GuiObject) GuiObject.Parent = get_hidden_gui(); end;
-    ProtectFunctions.Sentinel = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
-    ProtectFunctions.ScriptWare = function(GuiObject) GuiObject.Parent = gethui(); end;
-    ProtectFunctions.Undefined = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
+	local ProtectFunctions = {};
+	ProtectFunctions.Synapse = function(GuiObject) syn.protect_gui(GuiObject); GuiObject.Parent = CoreGuiService; end;
+	ProtectFunctions.ProtoSmasher = function(GuiObject) GuiObject.Parent = get_hidden_gui(); end;
+	ProtectFunctions.Sentinel = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
+	ProtectFunctions.ScriptWare = function(GuiObject) GuiObject.Parent = gethui(); end;
+	ProtectFunctions.Undefined = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
 
 	local NewInstance = Objects.new("ScreenGui")
 	NewInstance.Name = Title
-    ProtectFunctions[GetExploit()](NewInstance);
+	ProtectFunctions[GetExploit()](NewInstance);
 
-    getgenv().OldInstance = NewInstance;
+	getgenv().OldInstance = NewInstance;
 
 	MainGUI = NewInstance
 
@@ -951,7 +955,7 @@ function Material.Load(Config)
 		BannerOverlay.Parent = MainFrame
 
 		local TextSize = TextService:GetTextSize(BannerText, 12, Enum.Font.Gotham, Vector2.new(MainFrame.AbsoluteSize.X - 10, math.huge))
-    		local Lines = math.ceil(TextSize.Y / 20)
+		local Lines = math.ceil(TextSize.Y / 20)
 		local BannerSize = UDim2.new(1, -10, 0, (Lines * 20) + 40)
 		local BannerPosition = UDim2.new(0, 5, 1, (-Lines * 20) - 45)
 
@@ -1172,7 +1176,7 @@ function Material.Load(Config)
 
 		function OptionLibrary.Dropdown(DropdownConfig)
 			local DropdownText = DropdownConfig.Text or "nil dropdown"
-            local DropdownValue = DropdownConfig.Default
+			local DropdownValue = DropdownConfig.Default
 			local DropdownCallback = DropdownConfig.Callback or function() print("nil dropdown") end
 			local DropdownOptions = DropdownConfig.Options or {}
 			local Menu = DropdownConfig.Menu or {}
@@ -1254,7 +1258,7 @@ function Material.Load(Config)
 				NewButton.MouseButton1Down:Connect(function()
 					DropdownCallback(Value)
 					DropdownTitle.Text = DropdownText..": "..Value
-                    DropdownValue = Value
+					DropdownValue = Value
 				end)
 			end)
 
@@ -1282,9 +1286,9 @@ function Material.Load(Config)
 				return DropdownTitle.Text
 			end
 
-            function DropdownLibrary:GetValue()
-                return DropdownValue
-            end
+			function DropdownLibrary:GetValue()
+				return DropdownValue
+			end
 
 			function DropdownLibrary:SetOptions(NewMenu)
 				DropdownOptions = NewMenu or {}
@@ -1319,7 +1323,7 @@ function Material.Load(Config)
 					NewButton.MouseButton1Down:Connect(function()
 						DropdownCallback(Value)
 						DropdownTitle.Text = DropdownText..": "..Value
-                        DropdownValue = Value
+						DropdownValue = Value
 					end)
 				end)
 			end
@@ -2306,6 +2310,35 @@ function Material.Load(Config)
 			return LabelOptions
 		end
 
+		function OptionLibrary.TabTitle(LabelConfig)
+			-- Same thing as label but bolder and bigger
+			local LabelText = LabelConfig.Text or "nil label"
+
+			local LabelContainer = Objects.new("Round")
+			LabelContainer.Name = "Label"
+			LabelContainer.Size = UDim2.fromScale(1,0) + UDim2.fromOffset(0,25)
+			LabelContainer.ImageColor3 = Theme.MainFrame
+			LabelContainer.Parent = PageContentFrame
+
+			local LabelContent = Objects.new("Label")
+			LabelContent.TextColor3 = Theme.ChipSet
+			LabelContent.Text = LabelText:upper()
+			LabelContent.TextSize = 14
+			LabelContent.Font = Enum.Font.GothamBold
+			LabelContent.Size = UDim2.fromScale(1,1) + UDim2.fromOffset(-5,0)
+			LabelContent.Position = UDim2.fromOffset(5,0)
+			LabelContent.Parent = LabelContainer
+
+			local LabelOptions = {}
+
+			function LabelOptions.SetText(Text)
+				LabelContent.Text = Text
+			end
+
+			return LabelOptions
+		end
+
+
 		function OptionLibrary.Slider(SliderConfig)
 			local SliderText = SliderConfig.Text or "nil slider"
 			local SliderCallback = SliderConfig.Callback or function() print("nil slider") end
@@ -2440,9 +2473,9 @@ function Material.Load(Config)
 				return SliderTitle.Text
 			end
 
-            function SliderLibrary:GetValue()
-                return tonumber(SliderValue.Text)
-            end
+			function SliderLibrary:GetValue()
+				return tonumber(SliderValue.Text)
+			end
 
 			function SliderLibrary:SetMin(Value)
 				SliderMin = Value
