@@ -2517,7 +2517,7 @@ function Material.Load(Config)
 
 		return OptionLibrary
 	end
-	function Material.ChangeKeybind(KB)
+	function Material.SetKeybind(KB)
 		Keybind = KB
 	end
 	local MenuToggle = true
@@ -2526,11 +2526,10 @@ function Material.Load(Config)
 	local KeybindConnection
 	KeybindConnection = InputService.InputEnded:Connect(function(UserInput)
 		if not MainFrame or not MainFrame.Parent then
-			warn("Disconnecting keybind, MainFrame not found.")
+			--warn("Disconnecting keybind, MainFrame not found.")
 			return KeybindConnection:Disconnect()
 		end
 		if UserInput.KeyCode == Keybind and not AlreadyTweening then
-			warn("Keybind pressed")
 			if MenuToggle and not AlreadyTweening then
 				OriginalPosition = MainFrame.Position
 				MenuToggle = false
