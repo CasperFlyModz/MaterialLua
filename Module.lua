@@ -735,7 +735,6 @@ function CreateNewButton(ButtonConfig, Parent)
 
 	return Button, ButtonLabel
 end
-
 function Material.Load(Config)
 	local Style = (Config.Style and math.clamp(Config.Style, 1, 3)) or 1
 	local Title = Config.Title or "MaterialLua"
@@ -743,6 +742,7 @@ function Material.Load(Config)
 	local SizeY = Config.SizeY or 500
 	local Theme = Config.Theme or "Light"
 	local Overrides = Config.ColorOverrides or {}
+	local Keybind = Config.Keybind or Enum.KeyCode.RightShift
 	local Open = true
 
 	Theme = Themes[Theme]
@@ -2286,6 +2286,10 @@ function Material.Load(Config)
 
 		function OptionLibrary.Label(LabelConfig)
 			local LabelText = LabelConfig.Text or "nil label"
+			local UseCapitals = true
+			if LabelConfig.Capitals ~= nil then
+				UseCapitals = LabelConfig.Capitals
+			end
 
 			local LabelContainer = Objects.new("Round")
 			LabelContainer.Name = "Label"
@@ -2295,7 +2299,7 @@ function Material.Load(Config)
 
 			local LabelContent = Objects.new("Label")
 			LabelContent.TextColor3 = Theme.ChipSet
-			LabelContent.Text = LabelText:upper()
+			LabelContent.Text = UseCapitals and LabelText:upper() or LabelText
 			LabelContent.TextSize = 12
 			LabelContent.Font = Enum.Font.GothamSemibold
 			LabelContent.Size = UDim2.fromScale(1,1) + UDim2.fromOffset(-5,0)
@@ -2314,6 +2318,10 @@ function Material.Load(Config)
 		function OptionLibrary.TabTitle(LabelConfig)
 			-- Same thing as label but bolder and bigger
 			local LabelText = LabelConfig.Text or "nil label"
+			local UseCapitals = true
+			if LabelConfig.Capitals ~= nil then
+				UseCapitals = LabelConfig.Capitals
+			end
 
 			local LabelContainer = Objects.new("Round")
 			LabelContainer.Name = "Label"
@@ -2323,7 +2331,7 @@ function Material.Load(Config)
 
 			local LabelContent = Objects.new("Label")
 			LabelContent.TextColor3 = Theme.ChipSet
-			LabelContent.Text = LabelText:upper()
+			LabelContent.Text = UseCapitals and LabelText:upper() or LabelText
 			LabelContent.TextSize = 14
 			LabelContent.Font = Enum.Font.GothamBold
 			LabelContent.Size = UDim2.fromScale(1,1) + UDim2.fromOffset(-5,0)
@@ -2509,6 +2517,40 @@ function Material.Load(Config)
 
 		return OptionLibrary
 	end
+	function Material.ChangeKeybind(KB)
+		Keybind = KB
+	end
+	local MenuToggle = true
+	local OriginalPosition = MainFrame.Position
+	local AlreadyTweening = false
+	local KeybindConnection
+	KeybindConnection = InputService.InputEnded:Connect(function(UserInput)
+		if not MainFrame or not MainFrame.Parent then
+			warn("Disconnecting keybind, MainFrame not found.")
+			return KeybindConnection:Disconnect()
+		end
+		if UserInput.KeyCode == Keybind and not AlreadyTweening then
+			warn("Keybind pressed")
+			if MenuToggle and not AlreadyTweening then
+				OriginalPosition = MainFrame.Position
+				MenuToggle = false
+				AlreadyTweening = true
+				local Closing = TweenService:Create(MainFrame, TweenInfo.new(0.3), {Position = UDim2.new(0.5, -MainFrame.Size.X.Offset / 2, -0.5, -MainFrame.Size.Y.Offset / 2)})
+				Closing:Play()
+				Closing.Completed:Connect(function()
+					AlreadyTweening = false
+				end)
+			else
+				MenuToggle = true
+				AlreadyTweening = true
+				local Opening = TweenService:Create(MainFrame, TweenInfo.new(0.3), {Position = OriginalPosition})
+				Opening:Play()
+				Opening.Completed:Connect(function()
+					AlreadyTweening = false
+				end)
+			end
+		end
+	end)
 
 	return TabLibrary
 end
