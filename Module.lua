@@ -2517,7 +2517,7 @@ function Material.Load(Config)
 
 		return OptionLibrary
 	end
-	function Material.SetKeybind(KB)
+	function Material.ChangeKeybind(KB)
 		Keybind = KB
 	end
 	local MenuToggle = true
