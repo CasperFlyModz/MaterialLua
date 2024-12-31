@@ -1,13 +1,41 @@
+local Vanities = {
+	RIP = "rips",
+	SirHurt = "sirhurtv5"
+}
 local Player = game:GetService("Players").LocalPlayer
 local Mouse = Player:GetMouse()
-
 local TextService = game:GetService("TextService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local InputService = game:GetService("UserInputService")
-local CoreGuiService = game:GetService("CoreGui")
-local ContentService = game:GetService("ContentProvider")
-
+local StarterGui = game:GetService("StarterGui")
+local function Notify(title, text, duration, buttons, callback)
+	Notification = {
+		Title = title or "Title",
+		Text = text or "Text",
+		Duration = duration or 10
+	}
+	if callback then
+		tempbind = Instance.new("BindableFunction")
+		tempbind.OnInvoke = callback
+		Notification["Callback"] = tempbind
+	end
+	if buttons then
+		for i, v in ipairs(buttons) do
+			Notification["Button" .. i] = v
+		end
+	end
+	StarterGui:SetCore("SendNotification", Notification)
+end
+local function checkif(func, msg)
+	if not func then
+		warn("Your exploit is missing " .. msg)
+		Notify("Error", "Your exploit is missing " .. msg, math.huge, {"Close"})
+		return false
+	else
+		return func
+	end
+end
 local Themes = {
 	Light = {
 		MainFrame = Color3.fromRGB(255,255,255),
@@ -592,7 +620,16 @@ local NavBar = {
 }
 
 local MainGUI
-
+function findAncestorWithParentContent(guiObject)
+    local current = guiObject
+    while current.Parent and task.wait() do
+        if current.Parent.Name == "Content" then
+            return current
+        end
+        current = current.Parent
+    end
+    return nil
+end
 function TryAddMenu(Object, Menu, ReturnTable)
 	local Menu = Menu
 	local ReturnTable = ReturnTable
@@ -675,9 +712,13 @@ function TryAddMenu(Object, Menu, ReturnTable)
 				OptionValue.Parent = MenuOption
 
 				MenuOption.MouseButton1Down:Connect(function()
-					Value(ReturnTable)
-					MenuToggle = false
-					TweenService:Create(MenuBuild, TweenInfo.new(0.15), {Size = UDim2.fromOffset(120,0)}):Play()
+					if findAncestorWithParentContent(Object).Visible then
+						Value(ReturnTable)
+						MenuToggle = false
+						--print(Object.Parent.Name)
+						--print(findAncestorWithParentContent(Object).Name)
+						TweenService:Create(MenuBuild, TweenInfo.new(0.15), {Size = UDim2.fromOffset(120,0)}):Play()
+					end
 				end)
 
 				MenuOption.MouseEnter:Connect(function()
@@ -756,27 +797,24 @@ function Material.Load(Config)
 	pcall(function() OldInstance:Destroy() end);
 
 	local function GetExploit()
-		local Table = {};
-		Table.Synapse = syn;
-		Table.ProtoSmasher = pebc_create;
-		Table.Sentinel = issentinelclosure;
-		Table.ScriptWare = getexecutorname;
+		if gethui or get_hidden_gui then
+			return "Defined"
+		else
+			return "Undefined"
+		end
+	end
 
-		for ExploitName, ExploitFunction in next, Table do
-			if (ExploitFunction) then
-				return ExploitName;
-			end;
-		end;
-
-		return "Undefined";
-	end;
-
-	local ProtectFunctions = {};
-	ProtectFunctions.Synapse = function(GuiObject) syn.protect_gui(GuiObject); GuiObject.Parent = CoreGuiService; end;
-	ProtectFunctions.ProtoSmasher = function(GuiObject) GuiObject.Parent = get_hidden_gui(); end;
-	ProtectFunctions.Sentinel = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
-	ProtectFunctions.ScriptWare = function(GuiObject) GuiObject.Parent = gethui(); end;
-	ProtectFunctions.Undefined = function(GuiObject) GuiObject.Parent = CoreGuiService; end;
+	local ProtectFunctions = {}
+	ProtectFunctions.Defined = function(GuiObject)
+		if gethui then
+			GuiObject.Parent = gethui()
+		elseif get_hidden_gui then
+			GuiObject.Parent = get_hidden_gui()
+		end
+	end
+	ProtectFunctions.Undefined = function(GuiObject)
+		GuiObject.Parent = game:GetService("CoreGui")
+	end
 
 	local NewInstance = Objects.new("ScreenGui")
 	NewInstance.Name = Title
@@ -929,7 +967,8 @@ function Material.Load(Config)
 	local TabCount = 0
 
 	local TabLibrary = {}
-
+	TabLibrary.Vanities = Vanities
+	TabLibrary.Logo = "        _.---,._,'                             '._,---._        \n       /' _.--.<                                >.--._ `\\       \n         /'     `'                             '`     `\\        \n       /' _.---._____                       _____,---._ `\\       \n       \\.'   ___, .-'`                       `'-, ___, './       \n           /'    \\\\             .             //    `\\       \n         /'       `-.          -|-          .-'       `\\        \n        |                       |                       |        \n        |                   .-'~~~`-.                   |        \n        |                 .'         `.                 |        \n        |                 |  R  I  P  |                 |        \n        |                 |           |                 |        \n        |                 |  RIP#6666 |                 |        \n        |                 |  gg/" .. TabLibrary.Vanities.RIP .. "  |                 |        \n         \\              \\\\| From 2020 |//              /        \n   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
 	local ButtonTrack = {}
 	local PageTrack = {}
 
@@ -1119,6 +1158,18 @@ function Material.Load(Config)
 
 		table.insert(ButtonTrack, Button)
 		table.insert(PageTrack, PageContentFrame)
+
+		if TabCount == 0 then
+			TweenService:Create(Button, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+			pcall(function()
+				TweenService:Create(Button:FindFirstChildWhichIsA("ImageLabel"), TweenInfo.new(0.15), {ImageTransparency = 0}):Play()
+			end)
+		else
+			TweenService:Create(Button, TweenInfo.new(0.15), {TextTransparency = 0.5}):Play()
+			pcall(function()
+				TweenService:Create(Button:FindFirstChildWhichIsA("ImageLabel"), TweenInfo.new(0.15), {ImageTransparency = 0.5}):Play()
+			end)
+		end
 
 		Button.MouseButton1Down:Connect(function()
 			for _, Track in next, ButtonTrack do
@@ -2486,6 +2537,18 @@ function Material.Load(Config)
 				return tonumber(SliderValue.Text)
 			end
 
+			function SliderLibrary:SetValue(Value)
+				SliderValue.Text = Value
+				local DefaultScale = (Value - SliderMin) / (SliderMax - SliderMin)
+				local SizeFromScale = (MinSize +  (MaxSize - MinSize)) * DefaultScale
+				SizeFromScale = SizeFromScale - (SizeFromScale % 2)
+				SliderDot.Position = UDim2.fromScale(DefaultScale,0.5) - UDim2.fromOffset(5,5)
+				SliderFadedDot.Size = UDim2.fromOffset(SizeFromScale,SizeFromScale)
+				SliderFadedDot.Position = UDim2.fromScale(0.5,0.5) - UDim2.fromOffset(SizeFromScale/2,SizeFromScale/2)
+				SliderFill.Size = UDim2.fromScale(DefaultScale,1)
+				SliderCallback(Value)
+			end
+
 			function SliderLibrary:SetMin(Value)
 				SliderMin = Value
 				local SliderDef = math.clamp(SliderConfig.Def, SliderMin, SliderMax) or math.clamp(50, SliderMin, SliderMax)
@@ -2520,6 +2583,7 @@ function Material.Load(Config)
 	function Material.ChangeKeybind(KB)
 		Keybind = KB
 	end
+	TabLibrary.ChangeKeybind = Material.ChangeKeybind
 	local MenuToggle = true
 	local OriginalPosition = MainFrame.Position
 	local AlreadyTweening = false
@@ -2550,7 +2614,550 @@ function Material.Load(Config)
 			end
 		end
 	end)
-
+	function Material.ChangeSize(GivenSizeX, GivenSizeY)
+		MainFrame.Size = UDim2.fromOffset(GivenSizeX, GivenSizeY)
+	end
+	TabLibrary.ChangeSize = Material.ChangeSize
+	function Material.ResetSize()
+		MainFrame.Size = UDim2.fromOffset(SizeX, SizeY)
+	end
+	TabLibrary.ResetSize = Material.ResetSize
+	function TabLibrary.FPSTab()
+		if not _G.Settings then
+			_G.Settings = {
+				Players = {
+					["Ignore Me"] = true,
+					["Ignore Others"] = true,
+					["Ignore Tools"] = true
+				},
+				Meshes = {
+					NoMesh = false,
+					NoTexture = false,
+					Destroy = false
+				},
+				Images = {
+					Invisible = true,
+					Destroy = false
+				},
+				Explosions = {
+					Smaller = true,
+					Invisible = false,
+					Destroy = false
+				},
+				Particles = {
+					Invisible = true,
+					Destroy = false
+				},
+				TextLabels = {
+					LowerQuality = true,
+					Invisible = false,
+					Destroy = false
+				},
+				MeshParts = {
+					LowerQuality = true,
+					Invisible = false,
+					NoTexture = false,
+					NoMesh = false,
+					Destroy = false
+				},
+				Other = {
+					["FPS Cap"] = 240,
+					["No Camera Effects"] = true,
+					["No Clothes"] = true,
+					["Low Water Graphics"] = true,
+					["No Shadows"] = true,
+					["Low Rendering"] = true,
+					["Low Quality Parts"] = true,
+					["Low Quality Models"] = true,
+					["Reset Materials"] = true,
+					["Lower Quality MeshParts"] = true
+				}
+			}
+		end
+		local FPS = TabLibrary.New({
+			Title = "FPS"
+		})
+		local AverageFPSLabel = FPS.Label({
+			Text = "Average FPS: "
+		})
+		local MostFPSLabel = FPS.Label({
+			Text = "Highest FPS: "
+		})
+		local LeastFPSLabel = FPS.Label({
+			Text = "Lowest FPS: "
+		})
+		local CurrentFPS = 0
+		local MostFPS = 0
+		local LeastFPS = 0
+		coroutine.wrap(function()
+			while wait(1) do
+				MostFPS = CurrentFPS
+				LeastFPS = CurrentFPS
+			end
+		end)()
+		local FPSReadings = {}
+		local AverageFPS = 0
+		function mathaverage(t)
+			local sum = 0
+			for _,v in pairs(t) do
+				sum = sum + v
+			end
+			return math.round(sum / #t)
+		end
+		RunService.RenderStepped:Connect(function(frame)
+			CurrentFPS = math.floor(1 / frame)
+			if #FPSReadings <= 100 then
+				FPSReadings[#FPSReadings+1] = CurrentFPS
+			else
+				local n = 0
+				for i, v in pairs(FPSReadings) do
+					n = n + v
+				end
+				AverageFPS = math.floor(n / #FPSReadings)
+				FPSReadings = {}
+			end
+			if CurrentFPS > MostFPS then
+				MostFPS = CurrentFPS
+			end
+			if CurrentFPS < LeastFPS then
+				LeastFPS = CurrentFPS
+			end
+		end)
+		coroutine.wrap(function()
+			while wait(.4) and AverageFPS and MostFPS and LeastFPS do
+				AverageFPSLabel.SetText("Average FPS: " .. AverageFPS)
+				MostFPSLabel.SetText("Most FPS: " .. MostFPS)
+				LeastFPSLabel.SetText("Least FPS: " .. LeastFPS)
+			end
+		end)()
+		FPS.TabTitle({
+			Text = "FPS Cap"
+		})
+		FPS.Slider({
+			Text = "Set FPS Cap",
+			Callback = function(Value)
+				checkif(setfpscap, "setfpscap")(Value)
+			end,
+			Min = 5,
+			Max = 700,
+			Def = 60,
+			Menu = {
+				Description = function()
+					TabLibrary.Banner({
+						Text = TabLibrary.Logo .. "Sets the maximum FPS"
+					})
+				end
+			}
+		})
+		FPS.Button({
+			Text = "UnCap FPS",
+			Callback = function()
+				checkif(setfpscap, "setfpscap")(1e6)
+			end,
+			Menu = {
+				Description = function()
+					TabLibrary.Banner({
+						Text = TabLibrary.Logo .. "Uncaps the FPS"
+					})
+				end
+			}
+		})
+		FPS.TabTitle({
+			Text = "FPS Booster"
+		})
+		FPS.Label({
+			Text = "Players"
+		})
+		FPS.DataTable({
+			Text = "Players",
+			Callback = function(ChipSet)
+				_G.Settings.Players = ChipSet
+			end,
+			Options = {
+				["Ignore Me"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Ignores your character"
+							})
+						end
+					}
+				},
+				["Ignore Others"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Ignores other players"
+							})
+						end
+					}
+				},
+				["Ignore Tools"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Ignores tools"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "Meshes"
+		})
+		FPS.DataTable({
+			Text = "Meshes",
+			Callback = function(ChipSet)
+				_G.Settings.Meshes = ChipSet
+			end,
+			Options = {
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Destroys all meshes"
+							})
+						end
+					}
+				},
+				NoMesh = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all meshes"
+							})
+						end
+					}
+				},
+				NoTexture = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all textures"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "Images"
+		})
+		FPS.DataTable({
+			Text = "Images",
+			Callback = function(ChipSet)
+				_G.Settings.Images = ChipSet
+			end,
+			Options = {
+				Invisible = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all images invisible"
+							})
+						end
+					}
+				},
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Destroys all images"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "Explosions"
+		})
+		FPS.DataTable({
+			Text = "Explosions",
+			Callback = function(ChipSet)
+				_G.Settings.Explosions = ChipSet
+			end,
+			Options = {
+				Smaller = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "NOT RECOMMENDED FOR PVP\n\nMakes all explosions smaller"
+							})
+						end
+					}
+				},
+				Invisible = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "NOT RECOMMENDED FOR PVP\n\nMakes all explosions invisible"
+							})
+						end
+					}
+				},
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "NOT RECOMMENDED FOR PVP\n\nDestroys all explosions"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "Particles"
+		})
+		FPS.DataTable({
+			Text = "Particles",
+			Callback = function(ChipSet)
+				_G.Settings.Particles = ChipSet
+			end,
+			Options = {
+				Invisible = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all particles invisible"
+							})
+						end
+					}
+				},
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Destroys all particles"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "TextLabels"
+		})
+		FPS.DataTable({
+			Text = "TextLabels",
+			Callback = function(ChipSet)
+				_G.Settings.TextLabels = ChipSet
+			end,
+			Options = {
+				LowerQuality = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all text labels lower quality"
+							})
+						end
+					}
+				},
+				Invisible = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all text labels invisible"
+							})
+						end
+					}
+				},
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Destroys all text labels"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "MeshParts"
+		})
+		FPS.DataTable({
+			Text = "MeshParts",
+			Callback = function(ChipSet)
+				_G.Settings.MeshParts = ChipSet
+			end,
+			Options = {
+				LowerQuality = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all mesh parts lower quality"
+							})
+						end
+					}
+				},
+				Invisible = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Makes all mesh parts invisible"
+							})
+						end
+					}
+				},
+				NoTexture = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all textures from mesh parts"
+							})
+						end
+					}
+				},
+				NoMesh = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all meshes from mesh parts"
+							})
+						end
+					}
+				},
+				Destroy = {
+					Enabled = false,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Destroys all mesh parts"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Label({
+			Text = "Other"
+		})
+		FPS.DataTable({
+			Text = "Other",
+			Callback = function(ChipSet)
+				_G.Settings.Other = ChipSet
+			end,
+			Options = {
+				["No Camera Effects"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Disables camera effects"
+							})
+						end
+					}
+				},
+				["No Clothes"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all clothes"
+							})
+						end
+					}
+				},
+				["Low Water Graphics"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Lowers water graphics"
+							})
+						end
+					}
+				},
+				["No Shadows"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Removes all shadows"
+							})
+						end
+					}
+				},
+				["Low Rendering"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Lowers rendering aka graphics"
+							})
+						end
+					}
+				},
+				["Low Quality Parts"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Lowers part quality"
+							})
+						end
+					}
+				},
+				["Low Quality Models"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Lowers model quality"
+							})
+						end
+					}
+				},
+				["Reset Materials"] = {
+					Enabled = true,
+					Menu = {
+						Description = function()
+							TabLibrary.Banner({
+								Text = TabLibrary.Logo .. "Resets all materials"
+							})
+						end
+					}
+				}
+			}
+		})
+		FPS.Button({
+			Text = "Apply FPS Booster",
+			Callback = function()
+				loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
+			end,
+			Menu = {
+				Description = function()
+					TabLibrary.Banner({
+						Text = TabLibrary.Logo .. "Applies the settings above"
+					})
+				end
+			}
+		})
+		return FPS
+	end
 	return TabLibrary
 end
 
