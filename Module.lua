@@ -2217,7 +2217,10 @@ function Material.Load(Config)
 			TweenService:Create(ToggleLabel, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
 			TweenService:Create(Dot, TweenInfo.new(0.15), {Position = (ToggleDefault and UDim2.fromScale(1,0.5) or UDim2.fromScale(0,0.5)) - UDim2.fromOffset(8,8), ImageColor3 = ToggleDefault and Theme.Toggle or Theme.ToggleAccent}):Play()
-			ToggleCallback(ToggleDefault)
+			--ToggleCallback(ToggleDefault)
+			if ToggleDefault then
+				coroutine.wrap(function() ToggleCallback(ToggleDefault) end)()
+			end
 
 			Toggle.MouseButton1Down:Connect(function()
 				ToggleDefault = not ToggleDefault
@@ -2617,10 +2620,6 @@ function Material.Load(Config)
 		MainFrame.Size = UDim2.fromOffset(GivenSizeX, GivenSizeY)
 	end
 	TabLibrary.ChangeSize = Material.ChangeSize
-	function Material.ResetSize()
-		MainFrame.Size = UDim2.fromOffset(SizeX, SizeY)
-	end
-	TabLibrary.ResetSize = Material.ResetSize
 	function TabLibrary.FPSTab()
 		if not _G.Settings then
 			_G.Settings = {
