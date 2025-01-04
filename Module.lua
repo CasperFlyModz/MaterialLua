@@ -867,21 +867,25 @@ function Material.Load(Config)
 	TitleText.RichText = true
 	TitleText.Parent = TitleBar
 
-	TitleText.MouseButton1Down:Connect(function()
-		local Mx, My = Mouse.X, Mouse.Y
-		local MouseMove, MouseKill
-		MouseMove = Mouse.Move:Connect(function()
-			local nMx, nMy = Mouse.X, Mouse.Y
-			local Dx, Dy = nMx - Mx, nMy - My
-			MainFrame.Position = MainFrame.Position + UDim2.fromOffset(Dx, Dy)
-			Mx, My = nMx, nMy
-		end)
-		MouseKill = InputService.InputEnded:Connect(function(UserInput)
-			if UserInput.UserInputType == Enum.UserInputType.MouseButton1 then
-				MouseMove:Disconnect()
-				MouseKill:Disconnect()
-			end
-		end)
+	TitleText.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			local Mx, My = input.Position.X, input.Position.Y
+			local MouseMove, MouseKill
+			MouseMove = InputService.InputChanged:Connect(function(moveInput)
+				if moveInput.UserInputType == Enum.UserInputType.MouseMovement or moveInput.UserInputType == Enum.UserInputType.Touch then
+					local nMx, nMy = moveInput.Position.X, moveInput.Position.Y
+					local Dx, Dy = nMx - Mx, nMy - My
+					MainFrame.Position = MainFrame.Position + UDim2.fromOffset(Dx, Dy)
+					Mx, My = nMx, nMy
+				end
+			end)
+			MouseKill = InputService.InputEnded:Connect(function(endInput)
+				if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+					MouseMove:Disconnect()
+					MouseKill:Disconnect()
+				end
+			end)
+		end
 	end)
 
 	local MinimiseButton = Objects.new("SmoothButton")
