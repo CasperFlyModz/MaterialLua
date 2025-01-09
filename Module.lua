@@ -1,6 +1,6 @@
 local Vanities = {
 	RIP = "rips",
-	SirHurt = "sirhurtv5"
+	SirHurt = "EAsrvtV4AB"
 }
 local Player = game:GetService("Players").LocalPlayer
 local Mouse = Player:GetMouse()
