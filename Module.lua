@@ -393,6 +393,8 @@ end
 
 local Material = {}
 
+Material.Vanities = Vanities
+
 local Styles = {
 	[1] = "Normal",
 	[2] = "Invert",
@@ -2624,7 +2626,6 @@ function Material.Load(Config)
 	function Material.ChangeSize(GivenSizeX, GivenSizeY)
 		MainFrame.Size = UDim2.fromOffset(GivenSizeX, GivenSizeY)
 	end
-	Material.Vanities = Vanities
 	TabLibrary.ChangeSize = Material.ChangeSize
 	function TabLibrary.FPSTab()
 		if not _G.Settings then
