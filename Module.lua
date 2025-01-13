@@ -796,33 +796,34 @@ function Material.Load(Config)
 
 	pcall(function() OldInstance:Destroy() end);
 
-	local function GetExploit()
-		if gethui or get_hidden_gui then
-			return "Defined"
-		else
-			return "Undefined"
-		end
-	end
-
-	local ProtectFunctions = {}
-	ProtectFunctions.Defined = function(GuiObject)
-		if gethui then
-			GuiObject.Parent = gethui()
-		elseif get_hidden_gui then
-			GuiObject.Parent = get_hidden_gui()
-		end
-	end
-	ProtectFunctions.Undefined = function(GuiObject)
-		GuiObject.Parent = game:GetService("CoreGui")
-	end
-
 	local NewInstance = Objects.new("ScreenGui")
 	NewInstance.Name = Title
-	ProtectFunctions[GetExploit()](NewInstance);
+	if gethui then
+		NewInstance.Parent = gethui()
+	elseif get_hidden_gui then
+		NewInstance.Parent = get_hidden_gui()
+	else
+		NewInstance.Parent = game:GetService("CoreGui")
+	end
 
 	getgenv().OldInstance = NewInstance;
 
 	MainGUI = NewInstance
+
+	local Watermark = Instance.new("TextLabel", NewInstance)
+	Watermark.Name = "Watermark"
+	Watermark.AnchorPoint = Vector2.new(1, 1)
+	Watermark.Position = UDim2.new(1, -10, 1, -10)
+	Watermark.AutomaticSize = Enum.AutomaticSize.XY
+	Watermark.Size = UDim2.fromScale(0, 0)
+	Watermark.FontFace = Font.new("rbxassetid://12187365977", Enum.FontWeight.Bold)
+	Watermark.TextSize = 40
+	Watermark.RichText = true
+	Watermark.Text = 'discord.gg/<font color="#f00">rips</font>'
+	Watermark.TextTransparency = 0
+	Watermark.BackgroundTransparency = .6
+	local WatermarkUICorner = Instance.new("UICorner", Watermark)
+	WatermarkUICorner.CornerRadius = UDim.new(0, 10)
 
 	local MainFrame = Objects.new("Round")
 	MainFrame.Name = "MainFrame"
@@ -2623,6 +2624,7 @@ function Material.Load(Config)
 	function Material.ChangeSize(GivenSizeX, GivenSizeY)
 		MainFrame.Size = UDim2.fromOffset(GivenSizeX, GivenSizeY)
 	end
+	Material.Vanities = Vanities
 	TabLibrary.ChangeSize = Material.ChangeSize
 	function TabLibrary.FPSTab()
 		if not _G.Settings then
