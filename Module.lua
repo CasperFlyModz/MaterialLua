@@ -819,7 +819,7 @@ function Material.Load(Config)
 	Watermark.FontFace = Font.new("rbxassetid://12187365977", Enum.FontWeight.Bold)
 	Watermark.TextSize = 40
 	Watermark.RichText = true
-	Watermark.Text = 'discord.gg/<font color="#f00">rips</font>'
+	Watermark.Text = 'discord.gg/<font color="#f00">' .. Vanities.RIP .. '</font>'
 	Watermark.TextTransparency = 0
 	Watermark.BackgroundTransparency = .6
 	local WatermarkUICorner = Instance.new("UICorner", Watermark)
